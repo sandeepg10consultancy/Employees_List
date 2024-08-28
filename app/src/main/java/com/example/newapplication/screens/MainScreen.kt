@@ -1,6 +1,7 @@
 package com.example.newapplication.screens
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -9,14 +10,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -30,12 +30,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import coil.compose.AsyncImage
 import com.example.newapplication.R
 import com.example.newapplication.model.Data
 
@@ -45,14 +45,18 @@ fun MainScreen(modifier: Modifier = Modifier,employeesList: List<Data>, navContr
         val textState = remember {
             mutableStateOf(TextFieldValue(""))
         }
-        SearchView(state = textState,placeholder = "Search...", modifier = Modifier)
+        SearchView(state = textState,placeholder = "Search...", modifier = Modifier,navController)
         val searchedText = textState.value.text
         LazyColumn(modifier.padding(bottom = 25.dp)){
             items(items = employeesList.filter {
                 it.employee_name.contains(searchedText, ignoreCase = true)
             }, key = {it.id}){item ->
                 EmployeeItem(
+                    itemAge = item.employee_age,
                     itemName = item.employee_name,
+                    itemSalary = item.employee_salary,
+                    itemId = item.id,
+                    itemImage = item.profile_image,
                     navController = navController
                 )
 
@@ -65,25 +69,34 @@ fun MainScreen(modifier: Modifier = Modifier,employeesList: List<Data>, navContr
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun EmployeeItem(itemName: String, navController: NavHostController,modifier: Modifier = Modifier) {
+fun EmployeeItem(
+    itemName: String,
+    navController: NavHostController,
+    modifier: Modifier = Modifier,
+    itemAge: Int,
+    itemSalary: Int,
+    itemId: Int,
+    itemImage: String
+) {
     Card(
         modifier
             .wrapContentSize()
             .padding(10.dp)
             .clickable {
-                navController.navigate("DetailsScreen?name=$itemName")
+                navController.navigate("DetailsScreen?name=$itemName&age=$itemAge&salary=$itemSalary&id=$itemId&image=$itemImage")
             },
         colors = CardDefaults.cardColors(
             containerColor = Color.Gray
         )){
         Row(
-           modifier
+            modifier
                 .padding(6.dp)
-               .wrapContentSize(),
+                .wrapContentSize(),
             horizontalArrangement = Arrangement.SpaceBetween
         ){
+            Image(painter = painterResource(id = R.drawable.people), contentDescription = itemName )
             //AsyncImage(model = R.drawable.people, contentDescription = itemName)
-            //Spacer(modifier = Modifier.width(20.dp))
+            Spacer(modifier = Modifier.width(30.dp))
             Text(text = itemName,
                 modifier
                     .fillMaxSize()
@@ -96,29 +109,40 @@ fun EmployeeItem(itemName: String, navController: NavHostController,modifier: Mo
     }
 }
 
+
 @Composable
 fun SearchView(
     state: MutableState<TextFieldValue>,
     placeholder: String,
-    modifier: Modifier.Companion
+    modifier: Modifier,
+    navController: NavHostController
 ) {
-    TextField(value = state.value, onValueChange = {value ->
-        state.value = value
-    },
-        modifier
-            .fillMaxWidth()
-            .padding(top = 20.dp, end = 10.dp, start = 10.dp)
-            .clip(RoundedCornerShape(30.dp))
-            .border(2.dp, Color.Blue, RoundedCornerShape(30.dp)),
-        placeholder = {
-            Text(text = placeholder)
+    Row(horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically){
+        TextField(value = state.value, onValueChange = {value ->
+            state.value = value
         },
-        colors = TextFieldDefaults.colors(
-            focusedContainerColor = Color.Red
-        ),
-        maxLines = 1,
-        singleLine = true,
-        textStyle = TextStyle(color = Color.Black)
-    )
+            modifier
+                .padding(top = 20.dp, end = 10.dp, start = 10.dp)
+                .clip(RoundedCornerShape(30.dp))
+                .border(2.dp, Color.Blue, RoundedCornerShape(30.dp)),
+            placeholder = {
+                Text(text = placeholder)
+            },
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.Red
+            ),
+            maxLines = 1,
+            singleLine = true,
+            textStyle = TextStyle(color = Color.Black)
+        )
+        Button(onClick = {
+            navController.navigate(route = "NewUserScreen")
+        },
+            modifier = Modifier.padding(top = 20.dp)) {
+            Text(text = "Create")
+        }
+        
+    }
 
 }
