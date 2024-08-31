@@ -9,6 +9,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
+import java.util.concurrent.Flow
 
 interface ApiInterface {
 
@@ -16,13 +17,11 @@ interface ApiInterface {
     suspend fun getEmployee(): Response<Employee>
 
     @POST("create")
-    suspend fun createEmployee(
-        @Body user: Employee
-    ): Response<Employee>
+    suspend fun createEmployee(@Body user: Employee): Employee
     @PUT("update/{id}")
-    suspend fun updateEmployee(@Path("id") id: Int, @Body employee: Employee): Response<Employee>
+    suspend fun updateEmployee(@Path("id") id: Int, @Body employee: Employee): Employee
 
     @DELETE("delete/{id}")
-    suspend fun deleteEmployee(@Path("id") id: Int): Response<Employee>
+    suspend fun deleteEmployee(@Path("id") id: Int): Employee
 
 }

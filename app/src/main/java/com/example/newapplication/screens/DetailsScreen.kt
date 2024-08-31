@@ -30,10 +30,12 @@ import androidx.compose.ui.unit.sp
 import com.example.newapplication.model.Data
 import com.example.newapplication.model.Employee
 import com.example.newapplication.utils.RetrofitInstance
+import com.example.newapplication.viewModel.EmployeeViewModel
+import com.example.newapplication.viewModel.Repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import com.example.newapplication.FetchEmployees as FetchEmployees
+//import com.example.newapplication.FetchEmployees as FetchEmployees
 
 @Composable
 fun DetailsScreen(
@@ -44,6 +46,7 @@ fun DetailsScreen(
     id: Int,
     image: String?
 ) {
+    val myContext = LocalContext.current
     Column(
         modifier
             .background(Color.Cyan)
@@ -149,26 +152,9 @@ fun DetailsScreen(
                 )
                 Spacer(modifier = Modifier.padding(top = 40.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(120.dp)){
-                    val scope = rememberCoroutineScope()
-                    var buttonVariable by remember { mutableStateOf(false) }
-                    val context = LocalContext.current
-
                     Button(onClick = {
-                        scope.launch(Dispatchers.IO) {
-                            val response = RetrofitInstance.api.updateEmployee(id, employee =
-                            Employee(listOf( Data(ageTextField.value!!,nameTextField.value,salaryTextField.value!!,idTextField.value,imageTextField.value!!)),
-                                "",""))
-                            if (response.isSuccessful) {
-                                withContext(Dispatchers.Main) {
-                                    buttonVariable = true // Trigger FetchEmployees
-                                }
-                            } else {
-                                // Handle the error case
-                                withContext(Dispatchers.Main) {
-                                    Toast.makeText(context, "Failed to update employee", Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                        }
+                        EmployeeViewModel(Repository(RetrofitInstance)).
+                        updateEmployee(idTextField.value,Employee(listOf(Data(ageTextField.value!!,nameTextField.value,salaryTextField.value!!,idTextField.value,imageTextField.value!!)),"",""),myContext)
 
                     },){
                         Text(text = "Update")
@@ -176,66 +162,19 @@ fun DetailsScreen(
                     Button(
 
                         onClick = {
-                            scope.launch(Dispatchers.IO) {
-                                val response = RetrofitInstance.api.deleteEmployee(id)
-                                if (response.isSuccessful) {
-                                    withContext(Dispatchers.Main) {
-                                        buttonVariable = true // Trigger FetchEmployees
-                                    }
-                                } else {
-                                    // Handle the error case
-                                    withContext(Dispatchers.Main) {
-                                        Toast.makeText(context, "Failed to delete employee", Toast.LENGTH_SHORT).show()
-                                    }
-                                }
-                            }
+                            EmployeeViewModel(Repository(RetrofitInstance)).deleteEmployee(idTextField.value,myContext)
 
                         }
 
-                        /*
-                        onClick = {
-                            GlobalScope.launch {
-                                val response = id?.let { RetrofitInstance.api.deleteEmployee(it) }
-                                if (response != null) {
-                                    if (response.isSuccessful) {
-                                        buttonVariable = true
-                                    }
-                                }
-                            }
-                            if(buttonVariable){
-                                FetchEmployees()
-                                buttonVariable = false
-                            }
-
-                        },
-
-                         */
                     ){
                         Text(text = "Delete")
                     }
-                    if (buttonVariable) {
-                        FetchEmployees()
-                        buttonVariable = false // Reset the state to avoid repeated fetching
-                    }
+
 
                 }
+            }
+
         }
 
     }
-
 }
-    }
-/*
-@Preview(showBackground = true)
-@Composable
-fun PreviewFunction(){
-    DetailsScreen(
-        name = "hello",
-        age = 10,
-        salary = 20000,
-        id = 574,
-        image = "--"
-    )
-}
-
- */

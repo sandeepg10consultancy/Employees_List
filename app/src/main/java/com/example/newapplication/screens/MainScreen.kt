@@ -40,7 +40,7 @@ import com.example.newapplication.R
 import com.example.newapplication.model.Data
 
 @Composable
-fun MainScreen(modifier: Modifier = Modifier,employeesList: List<Data>, navController: NavHostController) {
+fun MainScreen(modifier: Modifier = Modifier, employeesList: List<Data>, navController: NavHostController) {
     Column(modifier.fillMaxSize()){
         val textState = remember {
             mutableStateOf(TextFieldValue(""))
