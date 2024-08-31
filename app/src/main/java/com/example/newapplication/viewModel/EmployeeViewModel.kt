@@ -1,7 +1,10 @@
 package com.example.newapplication.viewModel
 
+import android.app.AlertDialog
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.material3.AlertDialog
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,9 +38,37 @@ class EmployeeViewModel(private val repository: Repository):ViewModel() {
                 repository.createEmployee(user)
                  getEmployee()
             } catch (e: IOException) {
-                Toast.makeText(context,"Adding Employee Failed, error:${e.message}",Toast.LENGTH_LONG).show()
+                //Toast.makeText(context,"Adding Employee Failed, error:${e.message}",Toast.LENGTH_LONG).show()
+                 val builder = AlertDialog.Builder(context)
+                 builder.setTitle("IOException Error")
+                 builder.setMessage("This is a Error message: ${e.message}")
+                 builder.setPositiveButton("Confirm") { dialog, _ ->
+                     dialog.dismiss()
+                 }
+
+                 builder.setNegativeButton("Dismiss") { dialog, _ ->
+                     dialog.dismiss()
+                 }
+
+                 val dialog = builder.create()
+                 dialog.show()
+                 //AlertDialog(onDismissRequest = { /*TODO*/ }, confirmButton = { /*TODO*/ })
             } catch (e: HttpException) {
-                 Toast.makeText(context,"Adding Employee Failed, error:${e.message}",Toast.LENGTH_LONG).show()
+                 val builder = AlertDialog.Builder(context)
+                 builder.setTitle("HttpException Error")
+                 builder.setMessage("This is a Error message: ${e.message}")
+
+                 builder.setPositiveButton("Confirm") { dialog, _ ->
+                     dialog.dismiss()
+                 }
+
+                 builder.setNegativeButton("Dismiss") { dialog, _ ->
+                     dialog.dismiss()
+                 }
+
+                 val dialog = builder.create()
+                 dialog.show()
+                 //Toast.makeText(context,"Adding Employee Failed, error:${e.message}",Toast.LENGTH_LONG).show()
             }
 
         }
@@ -50,9 +81,35 @@ class EmployeeViewModel(private val repository: Repository):ViewModel() {
                 repository.updateEmployee(id, employee)
                 getEmployee()
             } catch (e: IOException) {
-                Toast.makeText(context,"Unable to update, error:${e.message}",Toast.LENGTH_LONG).show()
+                //Toast.makeText(context,"Unable to update, error:${e.message}",Toast.LENGTH_LONG).show()
+                val builder = AlertDialog.Builder(context)
+                builder.setTitle("IOException Error")
+                builder.setMessage("This is a Error message: ${e.message}")
+                builder.setPositiveButton("Confirm") { dialog, _ ->
+                    dialog.dismiss()
+                }
+
+                builder.setNegativeButton("Dismiss") { dialog, _ ->
+                    dialog.dismiss()
+                }
+
+                val dialog = builder.create()
+                dialog.show()
             } catch (e: HttpException) {
-                Toast.makeText(context,"Unable to update, error:${e.message}",Toast.LENGTH_LONG).show()
+                val builder = AlertDialog.Builder(context)
+                builder.setTitle("HttpException Error")
+                builder.setMessage("This is a Error message: ${e.message}")
+                builder.setPositiveButton("Confirm") { dialog, _ ->
+                    dialog.dismiss()
+                }
+
+                builder.setNegativeButton("Dismiss") { dialog, _ ->
+                    dialog.dismiss()
+                }
+
+                val dialog = builder.create()
+                dialog.show()
+                //Toast.makeText(context,"Unable to update, error:${e.message}",Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -64,9 +121,35 @@ class EmployeeViewModel(private val repository: Repository):ViewModel() {
                 repository.deleteEmployee(id)
                 getEmployee()
             } catch (e: IOException) {
-                Toast.makeText(context,"Unable to Delete, error:${e.message}",Toast.LENGTH_LONG).show()
+                //Toast.makeText(context,"Unable to Delete, error:${e.message}",Toast.LENGTH_LONG).show()
+                val builder = AlertDialog.Builder(context)
+                builder.setTitle("IOException Error")
+                builder.setMessage("This is a Error message: ${e.message}")
+                builder.setPositiveButton("Confirm") { dialog, _ ->
+                    dialog.dismiss()
+                }
+
+                builder.setNegativeButton("Dismiss") { dialog, _ ->
+                    dialog.dismiss()
+                }
+
+                val dialog = builder.create()
+                dialog.show()
             } catch (e: HttpException) {
-                Toast.makeText(context,"Unable to Delete, error:${e.message}",Toast.LENGTH_LONG).show()
+                val builder = AlertDialog.Builder(context)
+                builder.setTitle("HttpException Error")
+                builder.setMessage("This is a Error message: ${e.message}")
+                builder.setPositiveButton("Confirm") { dialog, _ ->
+                    dialog.dismiss()
+                }
+
+                builder.setNegativeButton("Dismiss") { dialog, _ ->
+                    dialog.dismiss()
+                }
+
+                val dialog = builder.create()
+                dialog.show()
+                //Toast.makeText(context,"Unable to Delete, error:${e.message}",Toast.LENGTH_LONG).show()
             }
         }
     }
